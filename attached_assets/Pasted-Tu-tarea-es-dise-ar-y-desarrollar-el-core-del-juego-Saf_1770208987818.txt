@@ -1,0 +1,147 @@
+Tu tarea es diseñar y desarrollar el core del juego “SafeCrack”, un juego de abrir cajas fuertes usando la Digital Crown / rotary input, con foco en UX táctil, ranking por caja y progresión limpia.
+
+🎮 Concepto general
+
+SafeCrack es un juego minimalista y sensorial para smartwatch donde el jugador abre cajas fuertes girando la corona.
+No hay números visibles: el jugador se guía por sensaciones, vibración, sonido y precisión.
+
+⸻
+
+🧠 Mecánica base
+	•	El input principal es la rotación de la corona (delta positivo / negativo).
+	•	La apertura de una caja NO es lineal, sino que se modela como un grafo dirigido:
+	•	Nodos = estados intermedios de la caja
+	•	Aristas = giros relativos (+xxx, -yyy)
+	•	Hay:
+	•	Caminos válidos
+	•	Caminos trampa (dead ends)
+	•	Nodo final (caja abierta)
+	•	El jugador explora el grafo girando la corona.
+
+⸻
+
+🔢 Intentos tipo “golf”
+	•	Cada caja tiene un PAR definido.
+	•	Intento = entrar en un nodo incorrecto o activar una trampa.
+	•	No cuentan microajustes ni exploración fina.
+	•	El resultado final es:
+	•	Número de intentos
+	•	Tiempo total (solo como desempate)
+
+El scoring principal es:
+	1.	Menos intentos
+	2.	Menor tiempo
+
+⸻
+
+🏆 Ranking por caja
+	•	Cada caja tiene su propio ranking público.
+	•	El ranking se basa en:
+	1.	Intentos
+	2.	Tiempo
+	•	El ranking muestra:
+	•	Top N (ej. 10)
+	•	Tu posición relativa si no estás en el top
+	•	El ranking es inmutable una vez cerrado (la lógica de cierre semanal NO es parte de este desarrollo).
+
+⸻
+
+🗂️ Tipos de cajas y progresión
+
+Free
+	•	9 cajas gratuitas
+	•	Se desbloquean una tras otra
+	•	Cada una tiene:
+	•	Grafo
+	•	Par
+	•	Ranking público
+
+Premium (pago único)
+	•	9 cajas premium adicionales
+	•	Se desbloquea toda la sección premium de golpe
+	•	También tienen par y ranking público
+
+Weekly
+	•	Cajas semanales especiales
+	•	El jugador puede:
+	•	Resolverlas siempre
+	•	Guardar ranking personal
+	•	Solo usuarios suscritos durante esa semana pueden entrar en el ranking público
+(la validación de suscripción y locks semanales NO es parte de este desarrollo).
+
+⸻
+
+👤 Ranking personal
+	•	Para todas las cajas (free, premium, weekly):
+	•	Guardar mejor score personal
+	•	Guardar mejor tiempo
+	•	El ranking personal nunca se borra.
+
+⸻
+
+🧩 Requisitos técnicos (importante)
+
+Input
+	•	Apple Watch:
+	•	Digital Crown
+	•	Detectar delta de rotación, dirección y velocidad
+	•	Wear OS:
+	•	Rotary input / scroll
+	•	La lógica del juego debe trabajar solo con deltas, nunca valores absolutos visibles.
+
+Feedback
+	•	Uso intensivo de:
+	•	Vibración (click, success, failure)
+	•	Sonido corto (opcional)
+	•	El juego debe poder jugarse casi sin mirar la pantalla.
+
+⸻
+
+🧱 Arquitectura esperada
+	•	Core del juego desacoplado de UI:
+	•	Motor de grafo
+	•	Evaluación de intentos
+	•	Cálculo de score
+	•	UI minimalista:
+	•	Dial / indicador
+	•	Feedback visual mínimo
+	•	Backend:
+	•	Asumir endpoints ya existentes
+	•	Tú solo defines el modelo de datos y llamadas
+	•	NO implementar lógica de cierre semanal
+
+⸻
+
+📊 Modelos de datos sugeridos
+	•	Safe
+	•	GraphNode
+	•	GraphEdge
+	•	AttemptResult
+	•	RankingEntry
+	•	PersonalBest
+
+⸻
+
+🚫 Fuera de alcance
+	•	Publicidad
+	•	Crypto
+	•	Wallets
+	•	Backend de locks semanales
+	•	Pagos in-app (solo asumir flags: free / premium / subscriber)
+
+⸻
+
+🎯 Objetivo final
+
+Entregar:
+	1.	El core jugable completo
+	2.	Una implementación clara del sistema de grafos
+	3.	Sistema de intentos tipo golf
+	4.	Ranking por caja (público y personal)
+	5.	UX adecuada para smartwatch
+
+Prioriza:
+	•	Simplicidad
+	•	Precisión
+	•	Sensación física del input
+	•	Código limpio y extensible
